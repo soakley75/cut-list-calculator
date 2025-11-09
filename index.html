@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cut List Calculator</title>
+</head>
+<body>
+  <h2>Cut List Calculator</h2>
+  <label>Pipe Length (inches): <input type="number" id="pipeLength" value="45"></label><br><br>
+  <textarea id="cutList" rows="6" cols="40" placeholder="Enter cut lengths and quantities like:\n4,10\n5,8\n6,5"></textarea><br><br>
+  <button onclick="calculate()">Calculate</button>
+  <h3>Results:</h3>
+  <div id="results"></div>
+
+  <script>
+    function calculate() {
+      const pipeLength = parseInt(document.getElementById("pipeLength").value);
+      const lines = document.getElementById("cutList").value.trim().split("\n");
+      let pieces = [];
+
+      lines.forEach(line => {
+        const [length, qty] = line.split(",").map(Number);
+        for (let i = 0; i < qty; i++) pieces.push(length);
+      });
+
+      pieces.sort((a, b) => b - a); // greedy: longest first
+      let pipes = [];
+
+      pieces.forEach(piece => {
+        let placed = false;
+        for (let pipe of pipes) {
+          const used = pipe.reduce((a, b) => a + b, 0);
+          if (used + piece <= pipeLength) {
+            pipe.push(piece);
+            placed = true;
+            break;
+          }
+        }
+        if (!placed) pipes.push([piece]);
+      });
+
+      document.getElementById("results").innerHTML =
+        `Total pipes needed: ${pipes.length}<br>` +
+        pipes.map((pipe, i) => `Pipe ${i + 1}: ${pipe.join(", ")} (used ${pipe.reduce((a, b) => a + b, 0)}")`).join("<br>");
+    }
+  </script>
+</body>
+</html>
