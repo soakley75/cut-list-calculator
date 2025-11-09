@@ -11,7 +11,7 @@
 </head>
 <body>
   <h2>Cut List Calculator</h2>
-  <label>Column Length (inches): <input type="number" id="columnLength" value="45"></label><br><br>
+  <label>Column Height (inches): <input type="number" id="columnHeight" value="45"></label><br><br>
 
   <div class="length-inputs" id="lengthInputs"></div>
 
@@ -31,7 +31,7 @@
     }
 
     function calculate() {
-      const columnLength = parseInt(document.getElementById("columnLength").value);
+      const columnHeight = parseInt(document.getElementById("columnHeight").value);
       let pieces = [];
 
       for (let i = minLength; i <= maxLength; i++) {
@@ -40,13 +40,13 @@
       }
 
       pieces.sort((a, b) => b - a);
-      let column = [];
+      let columns = [];
 
       pieces.forEach(piece => {
         let placed = false;
         for (let column of columns) {
           const used = column.reduce((a, b) => a + b, 0);
-          if (used + piece <= columnLength) {
+          if (used + piece <= columnHeight) {
             column.push(piece);
             placed = true;
             break;
@@ -56,7 +56,7 @@
       });
 
       document.getElementById("results").innerHTML =
-        `Total pipes needed: ${columns.length}<br>` +
+        `Total columns needed: ${columns.length}<br>` +
         columns.map((column, i) => `Column ${i + 1}: ${column.join(", ")} (used ${column.reduce((a, b) => a + b, 0)}")`).join("<br>");
     }
   </script>
