@@ -41,7 +41,11 @@ for (let i = minLength; i <= maxLength; i++) {
   box.appendChild(input);
   container.appendChild(box);
 }
-
+function updateColumnHeight() {
+  const styleSelect = document.getElementById("columnStyle");
+  const selectedHeight = styleSelect.value;
+  document.getElementById("columnHeight").value = selectedHeight;
+}
     function calculate() {
       const columnHeight = parseInt(document.getElementById("columnHeight").value);
       let pieces = [];
