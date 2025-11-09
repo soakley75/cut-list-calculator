@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Cut List Calculator</title>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    .length-inputs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 600px; }
-    .length-box { display: flex; flex-direction: column; align-items: center; }
-    input[type="number"] { width: 60px; }
-  </style>
-</head>
-<body>
-  <h2>Cut List Calculator</h2>
-  <label>Column Height (inches): <input type="number" id="columnHeight" value="45"></label><br><br>
+ <h2>Cut List Calculator</h2>
+
+<label>Column Style:
+  <select id="columnStyle" onchange="updateColumnHeight()">
+    <option value="45">Red Fiber Optic (45")</option>
+    <option value="24">Inferno (24")</option>
+  </select>
+</label><br><br>
+
+<label>Column Height (inches): <input type="number" id="columnHeight" value="45"></label><br><br>
 
   <div class="length-inputs" id="lengthInputs"></div>
 
