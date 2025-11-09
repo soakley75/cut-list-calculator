@@ -11,7 +11,7 @@
 </head>
 <body>
   <h2>Cut List Calculator</h2>
-  <label>Pipe Length (inches): <input type="number" id="pipeLength" value="45"></label><br><br>
+  <label>Column Length (inches): <input type="number" id="columnLength" value="45"></label><br><br>
 
   <div class="length-inputs" id="lengthInputs"></div>
 
@@ -31,7 +31,7 @@
     }
 
     function calculate() {
-      const pipeLength = parseInt(document.getElementById("pipeLength").value);
+      const columnLength = parseInt(document.getElementById("columnLength").value);
       let pieces = [];
 
       for (let i = minLength; i <= maxLength; i++) {
@@ -40,24 +40,24 @@
       }
 
       pieces.sort((a, b) => b - a);
-      let pipes = [];
+      let column = [];
 
       pieces.forEach(piece => {
         let placed = false;
-        for (let pipe of pipes) {
-          const used = pipe.reduce((a, b) => a + b, 0);
-          if (used + piece <= pipeLength) {
-            pipe.push(piece);
+        for (let column of columns) {
+          const used = column.reduce((a, b) => a + b, 0);
+          if (used + piece <= columnLength) {
+            column.push(piece);
             placed = true;
             break;
           }
         }
-        if (!placed) pipes.push([piece]);
+        if (!placed) columns.push([piece]);
       });
 
       document.getElementById("results").innerHTML =
-        `Total pipes needed: ${pipes.length}<br>` +
-        pipes.map((pipe, i) => `Pipe ${i + 1}: ${pipe.join(", ")} (used ${pipe.reduce((a, b) => a + b, 0)}")`).join("<br>");
+        `Total pipes needed: ${columns.length}<br>` +
+        columns.map((column, i) => `Column ${i + 1}: ${column.join(", ")} (used ${column.reduce((a, b) => a + b, 0)}")`).join("<br>");
     }
   </script>
 </body>
