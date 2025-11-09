@@ -2,27 +2,44 @@
 <html>
 <head>
   <title>Cut List Calculator</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .length-inputs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 600px; }
+    .length-box { display: flex; flex-direction: column; align-items: center; }
+    input[type="number"] { width: 60px; }
+  </style>
 </head>
 <body>
   <h2>Cut List Calculator</h2>
   <label>Pipe Length (inches): <input type="number" id="pipeLength" value="45"></label><br><br>
-  <textarea id="cutList" rows="6" cols="40" placeholder="Enter cut lengths and quantities like:\n4,10\n5,8\n6,5"></textarea><br><br>
-  <button onclick="calculate()">Calculate</button>
+
+  <div class="length-inputs" id="lengthInputs"></div>
+
+  <br><button onclick="calculate()">Calculate</button>
   <h3>Results:</h3>
   <div id="results"></div>
 
   <script>
+    const minLength = 4, maxLength = 18;
+    const container = document.getElementById("lengthInputs");
+
+    for (let i = minLength; i <= maxLength; i++) {
+      const box = document.createElement("div");
+      box.className = "length-box";
+      box.innerHTML = `<label>${i}"</label><input type="number" id="len${i}" min="0" value="0">`;
+      container.appendChild(box);
+    }
+
     function calculate() {
       const pipeLength = parseInt(document.getElementById("pipeLength").value);
-      const lines = document.getElementById("cutList").value.trim().split("\n");
       let pieces = [];
 
-      lines.forEach(line => {
-        const [length, qty] = line.split(",").map(Number);
-        for (let i = 0; i < qty; i++) pieces.push(length);
-      });
+      for (let i = minLength; i <= maxLength; i++) {
+        const qty = parseInt(document.getElementById(`len${i}`).value) || 0;
+        for (let j = 0; j < qty; j++) pieces.push(i);
+      }
 
-      pieces.sort((a, b) => b - a); // greedy: longest first
+      pieces.sort((a, b) => b - a);
       let pipes = [];
 
       pieces.forEach(piece => {
