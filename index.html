@@ -1,16 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
- <h2>Cut List Calculator</h2>
+  <title>Cut List Calculator</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .length-inputs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      max-width: 600px;
+    }
+    .length-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    input[type="number"] {
+      width: 60px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>Cut List Calculator</h2>
 
-<label>Column Style:
-  <select id="columnStyle" onchange="updateColumnHeight()">
-    <option value="45">Red Fiber Optic (45")</option>
-    <option value="24">Inferno (24")</option>
-  </select>
-</label><br><br>
+  <label>Column Style:
+    <select id="columnStyle" onchange="updateColumnHeight()">
+      <option value="45">Red Fiber Optic (45")</option>
+      <option value="24">Inferno (24")</option>
+    </select>
+  </label><br><br>
 
-<label>Column Height (inches): <input type="number" id="columnHeight" value="45"></label><br><br>
+  <label>Column Height (inches): <input type="number" id="columnHeight" value="45"></label><br><br>
 
   <div class="length-inputs" id="lengthInputs"></div>
 
@@ -22,30 +43,30 @@
     const minLength = 4, maxLength = 18;
     const container = document.getElementById("lengthInputs");
 
-for (let i = minLength; i <= maxLength; i++) {
-  const box = document.createElement("div");
-  box.className = "length-box";
+    for (let i = minLength; i <= maxLength; i++) {
+      const box = document.createElement("div");
+      box.className = "length-box";
 
-  const input = document.createElement("input");
-  input.type = "number";
-  input.id = `len${i}`;
-  input.min = "0";
-  input.value = "0";
+      const input = document.createElement("input");
+      input.type = "number";
+      input.id = `len${i}`;
+      input.min = "0";
+      input.value = "0";
+      input.addEventListener("focus", function() {
+        this.select();
+      });
 
-  // 👇 This line makes the input auto-select when clicked
-  input.addEventListener("focus", function() {
-    this.select();
-  });
+      box.innerHTML = `<label>${i}"</label>`;
+      box.appendChild(input);
+      container.appendChild(box);
+    }
 
-  box.innerHTML = `<label>${i}"</label>`;
-  box.appendChild(input);
-  container.appendChild(box);
-}
-function updateColumnHeight() {
-  const styleSelect = document.getElementById("columnStyle");
-  const selectedHeight = styleSelect.value;
-  document.getElementById("columnHeight").value = selectedHeight;
-}
+    function updateColumnHeight() {
+      const styleSelect = document.getElementById("columnStyle");
+      const selectedHeight = styleSelect.value;
+      document.getElementById("columnHeight").value = selectedHeight;
+    }
+
     function calculate() {
       const columnHeight = parseInt(document.getElementById("columnHeight").value);
       let pieces = [];
@@ -71,9 +92,26 @@ function updateColumnHeight() {
         if (!placed) columns.push([piece]);
       });
 
+      let totalWaste = 0;
+      let reusableCutoff = 4;
+      let reusablePieces = [];
+
+      let wasteSummary = columns.map((column, i) => {
+        const used = column.reduce((a, b) => a + b, 0);
+        const leftover = columnHeight - used;
+        totalWaste += leftover;
+        if (leftover >= reusableCutoff) {
+          reusablePieces.push(leftover);
+        }
+        return `Column ${i + 1}: ${leftover}" leftover`;
+      }).join("<br>");
+
       document.getElementById("results").innerHTML =
         `Total columns needed: ${columns.length}<br>` +
-        columns.map((column, i) => `Column ${i + 1}: ${column.join(", ")} (used ${column.reduce((a, b) => a + b, 0)}")`).join("<br>");
+        columns.map((column, i) => `Column ${i + 1}: ${column.join(", ")} (used ${column.reduce((a, b) => a + b, 0)}")`).join("<br>") +
+        `<br><br><strong>Leftover per column:</strong><br>${wasteSummary}` +
+        `<br><strong>Total leftover:</strong> ${totalWaste}"` +
+        `<br><strong>Reusable leftover pieces (≥ ${reusableCutoff}"): </strong> ${reusablePieces.length > 0 ? reusablePieces.join(", ") : "None"}`;
     }
   </script>
 </body>
